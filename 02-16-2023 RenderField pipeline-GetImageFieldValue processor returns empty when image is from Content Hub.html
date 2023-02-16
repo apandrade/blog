@@ -1,0 +1,323 @@
+<p><span face="Calibri, sans-serif" style="color: #b16b22; font-size: 16pt; white-space: pre-wrap;"></span></p>
+<h3 style="clear: both; text-align: left;">
+   <span style="color: #b16b22;">
+      <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJFtY6sNBNRpgf10eomsQAEyG4s5iPVI8emF7OIownb8HXq-1DfV0Pbv7CHTVR7blI-XTbbOOick7haND11cMY2fk3eVJjfokkTU_QmP92oKq5eWHcsTLnXXlTKxdCaLOUVbQg2NXw-CRL0WAbJ6BKUzhA6niJToPYokKtJpfq1yh4EWYQUzfnwC-p/s620/Pipelines%20cover.jpg" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="300" data-original-width="620" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJFtY6sNBNRpgf10eomsQAEyG4s5iPVI8emF7OIownb8HXq-1DfV0Pbv7CHTVR7blI-XTbbOOick7haND11cMY2fk3eVJjfokkTU_QmP92oKq5eWHcsTLnXXlTKxdCaLOUVbQg2NXw-CRL0WAbJ6BKUzhA6niJToPYokKtJpfq1yh4EWYQUzfnwC-p/s16000/Pipelines%20cover.jpg" /></a></div>
+      <br /><b><br /></b>
+   </span>
+</h3>
+<h3 style="clear: both; text-align: left;"><span style="color: #b16b22;"><b>Intro</b></span></h3>
+<span id="docs-internal-guid-30d11f56-7fff-852d-c241-9b6aef419d0c">
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;"><span face="Calibri, sans-serif" style="font-size: 11pt; font-variant-east-asian: normal; font-variant-numeric: normal; vertical-align: baseline; white-space: pre-wrap;">If you are trying to customize the way how Sitecore renders an image field globally in your solution, the most common approach to do that is by creating a pipeline processor for Sitecore.Pipelines.RenderField pipeline and configure it to be executed right after or instead of GetImageFieldValue processor.</span></p>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;"><span face="Calibri, sans-serif" style="font-size: 11pt; font-variant-east-asian: normal; font-variant-numeric: normal; vertical-align: baseline; white-space: pre-wrap;">A really good example for that is when you need to add a loading=”lazy” attribute to all of your images, because doing that in all Field helper call, like shown below, can be quite challenging if you have many places to update, and you probably have.</span></p>
+   <!--HTML generated using hilite.me-->
+   <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+      <pre style="line-height: 125%; margin: 0px;">@Html.Sitecore().Field(<span style="background-color: #fff0f0;">"Thumbnail Image"</span>, Model.Item, <span style="color: #008800; font-weight: bold;">new</span> { loading = <span style="background-color: #fff0f0;">"lazy"</span> })
+</pre>
+   </div>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;"><span face="Calibri, sans-serif" style="font-size: 11pt; font-variant-east-asian: normal; font-variant-numeric: normal; vertical-align: baseline; white-space: pre-wrap;"><br /></span></p>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;"><span face="Calibri, sans-serif" style="font-size: 14.6667px; font-variant-east-asian: normal; font-variant-numeric: normal; vertical-align: baseline; white-space: pre-wrap;"><b>P.S</b> My intention here is not teaching you how to implement a lazy loading mechanism, but I’ll use this as an example since it’s a very common use case. If you need some idea of how to do it just <a href="https://blogs.perficient.com/2020/07/24/defer-offscreen-images-in-sitecore/" target="_blank">read this article</a></span></p>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;"><br /></p>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;">That said, the best option we have is implementing a processor for FieldRender pipeline, and I did it!</p>
+   <p dir="ltr" style="line-height: 1.295; margin-bottom: 8pt; margin-top: 0pt;">However, the way I choosed to do that lead me to an issue that I’ve never seen before.</p>
+   <div><br /></div>
+   <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKLXlzgHTq-P03Bx1gUKh7jqIBP_dafGnfx9zNYZuA4PzZA4gF7SCFISw8-JAVotnhXZUMNwrnz2Vrlx61ikvMEMl7Tp1lcQ4LtvltQRI9-V-KwwkBYlpUUNHsUxYM23oma4bc0DeJVgndbfxUoq3oPFUPTBRKIx64nN5Aa9z3Jw5fXVUjdFAYH_ie/s500/talkis-cheap-show-me-the-code.png" style="margin-left: 1em; margin-right: 1em;"><img border="0" data-original-height="339" data-original-width="500" height="217" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKLXlzgHTq-P03Bx1gUKh7jqIBP_dafGnfx9zNYZuA4PzZA4gF7SCFISw8-JAVotnhXZUMNwrnz2Vrlx61ikvMEMl7Tp1lcQ4LtvltQRI9-V-KwwkBYlpUUNHsUxYM23oma4bc0DeJVgndbfxUoq3oPFUPTBRKIx64nN5Aa9z3Jw5fXVUjdFAYH_ie/s320/talkis-cheap-show-me-the-code.png" width="320" /></a></div>
+   <br />
+   <div><br /></div>
+   <div>
+      <h3 style="clear: both;"><span style="color: #b16b22;">The initial approach</span></h3>
+   </div>
+   <div>Here is how my config patch and processor were like when I finished the initial approach.</div>
+   <div><br /></div>
+   <div>The config patch</div>
+   <div><br /></div>
+</span>
+<!--HTML generated using hilite.me-->
+<div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+   <pre style="line-height: 125%; margin: 0px;">&lt;configuration xmlns:patch=<span style="background-color: #fff0f0;">"http://www.sitecore.net/xmlconfig/"</span> xmlns:<span style="color: #008800; font-weight: bold;">set</span>=<span style="background-color: #fff0f0;">"http://www.sitecore.net/xmlconfig/set/"</span>&gt;
+    &lt;sitecore&gt;
+        &lt;pipelines&gt;
+            &lt;renderField&gt;
+                &lt;processor patch:instead=<span style="background-color: #fff0f0;">"processor[@type='Sitecore.Pipelines.RenderField.GetImageFieldValue, Sitecore.Kernel']"</span> type=<span style="background-color: #fff0f0;">"Foundation.Pipelines.ImageProcessing, Foundation.Pipelines"</span>/&gt;
+            &lt;/renderField&gt;
+        &lt;/pipelines&gt;    
+    &lt;/sitecore&gt;</pre>
+   <pre style="line-height: 125%; margin: 0px;">&lt;/configuration&gt;
+</pre>
+</div>
+<div><br /></div>
+<div>The processor</div>
+<div><br /></div>
+<!--HTML generated using hilite.me-->
+<div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+   <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
+{
+    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">override</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">Process</span>(RenderFieldArgs args)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #008800; font-weight: bold;">this</span>.ShouldExecute(args))
+        {
+            <span style="color: #008800; font-weight: bold;">base</span>.Process(args);
+            args.Result.FirstPart = <span style="color: #008800; font-weight: bold;">this</span>.AddLoadingAttribute(args.Result.FirstPart);
+            args.AbortPipeline();
+        }
+
+    }
+
+    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #333399; font-weight: bold;">bool</span> <span style="color: #0066bb; font-weight: bold;">ShouldExecute</span>(RenderFieldArgs args)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #008800; font-weight: bold;">base</span>.IsImage(arg))
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (!Sitecore.Context.PageMode.IsNormal)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Site == <span style="color: #008800; font-weight: bold;">null</span>)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Item == <span style="color: #008800; font-weight: bold;">null</span>)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (args.Result != <span style="color: #008800; font-weight: bold;">null</span> &amp;&amp; <span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(args.Result.FirstPart))
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+
+        <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">true</span>;
+    }
+
+    <span style="color: #008800; font-weight: bold;">private</span> <span style="color: #333399; font-weight: bold;">string</span> <span style="color: #0066bb; font-weight: bold;">AddLoadingAttribute</span>(<span style="color: #333399; font-weight: bold;">string</span> tag)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (tag.Contains(<span style="background-color: #fff0f0;">"loading"</span>))
+        {
+            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"loading\\s*=\\s*['|\"].+?['\"]"</span>;
+            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
+            tag = Regex.Replace(tag, pattern, replacement);
+        }
+        <span style="color: #008800; font-weight: bold;">else</span>
+        {
+            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"\\s*/*\\s*&gt;"</span>;
+            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
+            tag = Regex.Replace(tag, pattern, replacement);
+        }
+
+        <span style="color: #008800; font-weight: bold;">return</span> tag;
+    }
+}
+</pre>
+</div>
+<div><br /></div>
+<div>
+   <p class="MsoNormal">
+      Pay attention I’ve configured to execute my processor as
+      patch:instead of GetImageFieldValue because my processor inherits from it and I
+      can call it’s base.Process method to be sure anything was left behind.
+      <o:p></o:p>
+   </p>
+   <p class="MsoNormal"><br /></p>
+   <h3 style="clear: both;"><span style="color: #b16b22;">The problem</span></h3>
+</div>
+<div>
+   <span>
+      <p class="MsoNormal">The above approach works fine if you no have a ContentHub instance integrated to your solution, however, that's not my case.
+When base.Process(args) is invoked the args.Result.FirstPart property is set as empty string<br />
+         <br /><br />
+      </p>
+      <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitJa4mvMup9zsBqXdT1Y4p0miSOX-kcE2X-JLuk2GOzVaA_T18_ea4qopoByOgzeuTc_D7vIgeoLnuFlvKekZW1q-5QBn75dD7JXXFYncrb54KssK-IlsAXkVQfHVwwQ3xevm9A0nYC1uWETRVsz7IBliRL0aX7cZXIavhzT_Dva1Mdtrugob3XzMI/s259/why.jpg" style="margin-left: 1em; margin-right: 1em;"><img alt="why meme" border="0" data-original-height="194" data-original-width="259" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitJa4mvMup9zsBqXdT1Y4p0miSOX-kcE2X-JLuk2GOzVaA_T18_ea4qopoByOgzeuTc_D7vIgeoLnuFlvKekZW1q-5QBn75dD7JXXFYncrb54KssK-IlsAXkVQfHVwwQ3xevm9A0nYC1uWETRVsz7IBliRL0aX7cZXIavhzT_Dva1Mdtrugob3XzMI/s16000/why.jpg" title="why meme" /></a></div>
+      <div style="text-align: center;"><br /></div>
+      <div style="text-align: center;">But why this happens?</div>
+      <p class="MsoNormal"><br /></p>
+      <p class="MsoNormal">
+         Well, to answer that let’s take a look into Sitecore.Kernel.dll using
+         a decompiling tool like JetBrains dotPeek.<br />
+         <br />
+         The Process method
+      </p>
+      <!--HTML generated using hilite.me-->
+      <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+         <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">virtual</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">Process</span>(RenderFieldArgs args)
+{
+    Assert.ArgumentNotNull((<span style="color: #333399; font-weight: bold;">object</span>) args, nameof (args));
+    <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #008800; font-weight: bold;">this</span>.IsImage(args))
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    ImageRenderer renderer = <span style="color: #008800; font-weight: bold;">this</span>.CreateRenderer();
+    <span style="color: #008800; font-weight: bold;">this</span>.ConfigureRenderer(args, renderer);
+    <span style="color: #008800; font-weight: bold;">this</span>.SetRenderFieldResult(renderer.Render(), args);
+}
+</pre>
+      </div>
+      <p class="MsoNormal">The ConfigureRenderer method</p>
+      <!--HTML generated using hilite.me-->
+      <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+         <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">protected</span> <span style="color: #008800; font-weight: bold;">virtual</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">ConfigureRenderer</span>(RenderFieldArgs args, ImageRenderer imageRenderer)
+{
+    Item itemToRender = args.Item;
+    imageRenderer.Item = itemToRender;
+    imageRenderer.FieldName = args.FieldName;
+    imageRenderer.FieldValue = args.FieldValue;
+    imageRenderer.Parameters = args.Parameters;
+    <span style="color: #008800; font-weight: bold;">if</span> (itemToRender == <span style="color: #008800; font-weight: bold;">null</span>)
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    imageRenderer.Parameters.Add(<span style="background-color: #fff0f0;">"la"</span>, itemToRender.Language.Name);
+    <span style="color: #008800; font-weight: bold;">this</span>.EnsureMediaItemTitle(args, itemToRender, imageRenderer);
+}
+</pre>
+      </div>
+      <p class="MsoNormal">The EnsureMediaItemTitle and GetInnerImageItem methods<br /></p>
+      <!--HTML generated using hilite.me-->
+      <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+         <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">protected</span> <span style="color: #008800; font-weight: bold;">virtual</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">EnsureMediaItemTitle</span>(
+    RenderFieldArgs args,
+    Item itemToRender,
+    ImageRenderer imageRenderer)
+{
+    <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(args.Parameters[<span style="color: #008800; font-weight: bold;">this</span>.TitleFieldName]))
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    Item innerImageItem = <span style="color: #008800; font-weight: bold;">this</span>.GetInnerImageItem(args, itemToRender);
+    <span style="color: #008800; font-weight: bold;">if</span> (innerImageItem == <span style="color: #008800; font-weight: bold;">null</span>)
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    Field field = innerImageItem.Fields[<span style="color: #008800; font-weight: bold;">this</span>.TitleFieldName];
+    <span style="color: #008800; font-weight: bold;">if</span> (field == <span style="color: #008800; font-weight: bold;">null</span>)
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    <span style="color: #333399; font-weight: bold;">string</span> str = field.Value;
+    <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(str) || imageRenderer.Parameters == <span style="color: #008800; font-weight: bold;">null</span>)
+    <span style="color: #008800; font-weight: bold;">return</span>;
+    imageRenderer.Parameters.Add(<span style="color: #008800; font-weight: bold;">this</span>.TitleFieldName, str);
+}
+
+<span style="color: #008800; font-weight: bold;">protected</span> <span style="color: #008800; font-weight: bold;">virtual</span> Item <span style="color: #0066bb; font-weight: bold;">GetInnerImageItem</span>(RenderFieldArgs args, Item itemToRender)
+{
+    Field field = itemToRender.Fields[args.FieldName];
+    <span style="color: #008800; font-weight: bold;">return</span> field == <span style="color: #008800; font-weight: bold;">null</span> ? (Item) <span style="color: #008800; font-weight: bold;">null</span> : <span style="color: #008800; font-weight: bold;">new</span> ImageField(field, args.FieldValue).MediaItem;
+}
+</pre>
+      </div>
+      <p class="MsoNormal">
+         And finally the SetRenderFieldResult method
+         <span style="color: #d4d4d4; font-family: Consolas; font-size: 10.5pt; line-height: 107%; mso-bidi-font-family: &quot;Times New Roman&quot;; mso-fareast-font-family: &quot;Times New Roman&quot;;">
+            <o:p></o:p>
+         </span>
+      </p>
+      <p class="MsoNormal"><br /></p>
+      <p class="MsoNormal">Let’s debug it <span style="color: #b45f06;">(you can copy the methods you want to debug into your class and call it instead of calling from the base class using inheritance)</span></p>
+      <p class="MsoNormal"><br /></p>
+      <p class="MsoNormal">So starting from Process method the following call stack will be created</p>
+   </span>
+</div>
+<blockquote style="border: none; margin: 0px 0px 0px 40px; padding: 0px; text-align: left;">
+   <div>
+      <span>
+         <p class="MsoNormal">GetInnerImageItem</p>
+      </span>
+   </div>
+   <div>
+      <span>
+         <p class="MsoNormal">EnsureMediaItemTitle</p>
+      </span>
+   </div>
+   <div>
+      <span>
+         <p class="MsoNormal">ConfigureRenderer</p>
+      </span>
+   </div>
+   <div>
+      <span>
+         <p class="MsoNormal">Process</p>
+      </span>
+   </div>
+</blockquote>
+<div>
+   <span>
+      <p class="MsoNormal"><br /></p>
+      <p class="MsoNormal">There is a ternary if in the GetInnerImageItem method that is supposed to return the media item attached to the field, but as I told you, we are also using ContentHub to hold some images and in that case, when the image is coming from ContentHub there is no media item attached to the field and this method will return always null, so moving on, in the SetRenderFieldResult method our args.Result.FirstPart and args.Result.LastPart properties will be empty.</p>
+      <p class="MsoNormal">Now here is the thing, if you execute this process as the last one of your pipeline, no html will be printed and if you run it before the ContentHub processor your changes will be replaced.&nbsp;</p>
+      <p class="MsoNormal">When you are getting image from ContentHub, there is a processor called GetMImageRenderFieldprocessor that adds a few attributes into our img tag like thumbnailsrc, so that, we can use them from other processors.</p>
+      <p class="MsoNormal"><br /></p>
+      <h3 style="clear: both;"><span style="color: #b16b22;">The solution</span></h3>
+      <p class="MsoNormal">What if I execute this processor right after the ContentHub processor?</p>
+      <p class="MsoNormal">Precisely!&nbsp;</p>
+      <p class="MsoNormal">When working with pipelines the order of your processor's execution is a quite important point. The processor receives a RenderFieldArgs parameter, do what it has to do and pass the args parameter to the next processor in the pipeline.</p>
+      <p class="MsoNormal">So to achieve that, I had to do a quick update on my initial solution just removing the base.Process call and changing the patch config to execute my pipeline right after GetMImageRenderField processor.</p>
+      <p class="MsoNormal">Here is how it looked like in the end.</p>
+      <p class="MsoNormal"><br /></p>
+      <p class="MsoNormal">The config patch</p>
+   </span>
+</div>
+<!--HTML generated using hilite.me-->
+<div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+   <pre style="line-height: 125%; margin: 0px;">&lt;configuration xmlns:patch=<span style="background-color: #fff0f0;">"http://www.sitecore.net/xmlconfig/"</span> xmlns:<span style="color: #008800; font-weight: bold;">set</span>=<span style="background-color: #fff0f0;">"http://www.sitecore.net/xmlconfig/set/"</span>&gt;
+    &lt;sitecore&gt;
+        &lt;pipelines&gt;
+            &lt;renderField&gt;
+                &lt;processor patch:after=<span style="background-color: #fff0f0;">"processor[@type='Sitecore.Connector.ContentHub.DAM.Pipelines.RenderField.GetMImageRenderField, Sitecore.Connector.ContentHub.DAM']"</span> type=<span style="background-color: #fff0f0;">"Foundation.Pipelines.ImageProcessing, Foundation.Pipelines"</span>/&gt;
+            &lt;/renderField&gt;
+        &lt;/pipelines&gt;    
+    &lt;/sitecore&gt;
+&lt;/configuration&gt;
+</pre>
+</div>
+<p class="MsoNormal"><br /></p>
+<p class="MsoNormal">The processor</p>
+<!--HTML generated using hilite.me-->
+<div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+   <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
+{
+    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">override</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">Process</span>(RenderFieldArgs args)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #008800; font-weight: bold;">this</span>.ShouldExecute(args))
+        {
+            args.Result.FirstPart = <span style="color: #008800; font-weight: bold;">this</span>.AddLoadingAttribute(args.Result.FirstPart);
+            args.AbortPipeline();
+        }
+
+    }
+
+    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #333399; font-weight: bold;">bool</span> <span style="color: #0066bb; font-weight: bold;">ShouldExecute</span>(RenderFieldArgs args)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #008800; font-weight: bold;">base</span>.IsImage(arg))
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (!Sitecore.Context.PageMode.IsNormal)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Site == <span style="color: #008800; font-weight: bold;">null</span>)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Item == <span style="color: #008800; font-weight: bold;">null</span>)
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (args.Result != <span style="color: #008800; font-weight: bold;">null</span> &amp;&amp; <span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(args.Result.FirstPart))
+            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+
+        <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">true</span>;
+    }
+
+    <span style="color: #008800; font-weight: bold;">private</span> <span style="color: #333399; font-weight: bold;">string</span> <span style="color: #0066bb; font-weight: bold;">AddLoadingAttribute</span>(<span style="color: #333399; font-weight: bold;">string</span> tag)
+    {
+        <span style="color: #008800; font-weight: bold;">if</span> (tag.Contains(<span style="background-color: #fff0f0;">"loading"</span>))
+        {
+            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"loading\\s*=\\s*['|\"].+?['\"]"</span>;
+            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
+            tag = Regex.Replace(tag, pattern, replacement);
+        }
+        <span style="color: #008800; font-weight: bold;">else</span>
+        {
+            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"\\s*/*\\s*&gt;"</span>;
+            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
+            tag = Regex.Replace(tag, pattern, replacement);
+        }
+
+        <span style="color: #008800; font-weight: bold;">return</span> tag;
+    }
+}
+</pre>
+</div>
+<p class="MsoNormal"><br /></p>
+<h3 style="clear: both;"><span style="color: #b16b22;">Conclusion</span></h3>
+<p class="MsoNormal">
+   Pay attention on the pipelines processors execution order,
+   they might be replacing or undoing things that you’ve done in your processor,
+   when working with them, I strongly recommend you to disable all the other
+   processors, leave only the ones that makes sense to your current ongoing task
+   and once you finish it, enable them again one by one, doing this you’ll find quickly which one
+   of your processors is causing issues.
+   <o:p></o:p>
+</p>
+<p class="MsoNormal"><span face="Calibri, sans-serif">That’s all guys, I hope this use case make your path to find a solution to your case a little bit short.</span></p>
+<p class="MsoNormal"><span face="Calibri, sans-serif">See you ahead!&nbsp;</span></p>
+<div><br /></div>
+<p class="MsoNormal">
+   <span face="Calibri, sans-serif" style="line-height: 107%;">
+      <!--[if !supportLineBreakNewLine]--><br />
+      <!--[endif]-->
+   </span>
+</p>
+<p class="MsoNormal"><br /></p>
