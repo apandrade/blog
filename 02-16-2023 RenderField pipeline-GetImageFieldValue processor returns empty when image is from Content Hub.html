@@ -49,48 +49,47 @@
 <div><br /></div>
 <!--HTML generated using hilite.me-->
 <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-   <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
+   <pre style="line-height: 125%; margin: 0px;">public <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
 {
-    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">override</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">Process</span>(RenderFieldArgs args)
+    public override void Process(RenderFieldArgs args)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #008800; font-weight: bold;">this</span>.ShouldExecute(args))
+        <span style="color: #008800; font-weight: bold;">if</span> (this<span style="color: #333333;">.</span>ShouldExecute(args))
         {
-            <span style="color: #008800; font-weight: bold;">base</span>.Process(args);
-            args.Result.FirstPart = <span style="color: #008800; font-weight: bold;">this</span>.AddLoadingAttribute(args.Result.FirstPart);
-            args.AbortPipeline();
+            base<span style="color: #333333;">.</span>Process(args);
+            args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart <span style="color: #333333;">=</span> this<span style="color: #333333;">.</span>AddLoadingAttribute(args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart);
         }
 
     }
 
-    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #333399; font-weight: bold;">bool</span> <span style="color: #0066bb; font-weight: bold;">ShouldExecute</span>(RenderFieldArgs args)
+    public <span style="color: #007020;">bool</span> ShouldExecute(RenderFieldArgs args)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #008800; font-weight: bold;">base</span>.IsImage(arg))
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (!Sitecore.Context.PageMode.IsNormal)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Site == <span style="color: #008800; font-weight: bold;">null</span>)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Item == <span style="color: #008800; font-weight: bold;">null</span>)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (args.Result != <span style="color: #008800; font-weight: bold;">null</span> &amp;&amp; <span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(args.Result.FirstPart))
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="background-color: #ffaaaa; color: red;">!</span>base<span style="color: #333333;">.</span>IsImage(arg))
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="background-color: #ffaaaa; color: red;">!</span>Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>PageMode<span style="color: #333333;">.</span>IsNormal)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>Site <span style="color: #333333;">==</span> null)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>Item <span style="color: #333333;">==</span> null)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (args<span style="color: #333333;">.</span>Result <span style="color: #333333;">!=</span> null <span style="color: #333333;">&amp;&amp;</span> string<span style="color: #333333;">.</span>IsNullOrEmpty(args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart))
+            <span style="color: #008800; font-weight: bold;">return</span> false;
 
-        <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">true</span>;
+        <span style="color: #008800; font-weight: bold;">return</span> true;
     }
 
-    <span style="color: #008800; font-weight: bold;">private</span> <span style="color: #333399; font-weight: bold;">string</span> <span style="color: #0066bb; font-weight: bold;">AddLoadingAttribute</span>(<span style="color: #333399; font-weight: bold;">string</span> tag)
+    private string AddLoadingAttribute(string tag)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (tag.Contains(<span style="background-color: #fff0f0;">"loading"</span>))
+        <span style="color: #008800; font-weight: bold;">if</span> (tag<span style="color: #333333;">.</span>Contains(<span style="background-color: #fff0f0;">"loading"</span>))
         {
-            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"loading\\s*=\\s*['|\"].+?['\"]"</span>;
-            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
-            tag = Regex.Replace(tag, pattern, replacement);
+            var pattern <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">"loading</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*=</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*['|</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\"</span><span style="background-color: #fff0f0;">].+?['</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\"</span><span style="background-color: #fff0f0;">]"</span>;
+            var replacement <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
+            tag <span style="color: #333333;">=</span> Regex<span style="color: #333333;">.</span>Replace(tag, pattern, replacement);
         }
         <span style="color: #008800; font-weight: bold;">else</span>
         {
-            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"\\s*/*\\s*&gt;"</span>;
-            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
-            tag = Regex.Replace(tag, pattern, replacement);
+            var pattern <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">"</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*/*</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*&gt;"</span>;
+            var replacement <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
+            tag <span style="color: #333333;">=</span> Regex<span style="color: #333333;">.</span>Replace(tag, pattern, replacement);
         }
 
         <span style="color: #008800; font-weight: bold;">return</span> tag;
@@ -112,7 +111,7 @@
 <div>
    <span>
       <p class="MsoNormal">The above approach works fine if you no have a ContentHub instance integrated to your solution, however, that's not my case.
-When base.Process(args) is invoked the args.Result.FirstPart property is set as empty string<br />
+         When base.Process(args) is invoked the args.Result.FirstPart property is set as empty string<br />
          <br /><br />
       </p>
       <div class="separator" style="clear: both; text-align: center;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitJa4mvMup9zsBqXdT1Y4p0miSOX-kcE2X-JLuk2GOzVaA_T18_ea4qopoByOgzeuTc_D7vIgeoLnuFlvKekZW1q-5QBn75dD7JXXFYncrb54KssK-IlsAXkVQfHVwwQ3xevm9A0nYC1uWETRVsz7IBliRL0aX7cZXIavhzT_Dva1Mdtrugob3XzMI/s259/why.jpg" style="margin-left: 1em; margin-right: 1em;"><img alt="why meme" border="0" data-original-height="194" data-original-width="259" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEitJa4mvMup9zsBqXdT1Y4p0miSOX-kcE2X-JLuk2GOzVaA_T18_ea4qopoByOgzeuTc_D7vIgeoLnuFlvKekZW1q-5QBn75dD7JXXFYncrb54KssK-IlsAXkVQfHVwwQ3xevm9A0nYC1uWETRVsz7IBliRL0aX7cZXIavhzT_Dva1Mdtrugob3XzMI/s16000/why.jpg" title="why meme" /></a></div>
@@ -190,10 +189,23 @@ When base.Process(args) is invoked the args.Result.FirstPart property is set as 
             <o:p></o:p>
          </span>
       </p>
+      <!--HTML generated using hilite.me-->
+      <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
+         <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">protected</span> <span style="color: #008800; font-weight: bold;">virtual</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">SetRenderFieldResult</span>(RenderFieldResult result, RenderFieldArgs args)
+{
+  args.Result.FirstPart = result.FirstPart;
+  args.Result.LastPart = result.LastPart;
+  args.WebEditParameters.AddRange((SafeDictionary&lt;<span style="color: #333399; font-weight: bold;">string</span>, <span style="color: #333399; font-weight: bold;">string</span>&gt;) args.Parameters);
+  args.DisableWebEditContentEditing = <span style="color: #008800; font-weight: bold;">true</span>;
+  args.DisableWebEditFieldWrapping = <span style="color: #008800; font-weight: bold;">true</span>;
+  args.WebEditClick = <span style="background-color: #fff0f0;">"return Sitecore.WebEdit.editControl($JavascriptParameters, 'webedit:chooseimage')"</span>;
+}
+</pre>
+      </div>
       <p class="MsoNormal"><br /></p>
-      <p class="MsoNormal">Let’s debug it <span style="color: #b45f06;">(you can copy the methods you want to debug into your class and call it instead of calling from the base class using inheritance)</span></p>
+      <p class="MsoNormal">Let’s debug it <span style="color: #b45f06;">(you can copy the methods you want to debug into your class and call them instead of calling from the base class using inheritance)</span></p>
       <p class="MsoNormal"><br /></p>
-      <p class="MsoNormal">So starting from Process method the following call stack will be created</p>
+      <p class="MsoNormal">So, starting from Process method the following call stack will be created</p>
    </span>
 </div>
 <blockquote style="border: none; margin: 0px 0px 0px 40px; padding: 0px; text-align: left;">
@@ -252,47 +264,46 @@ When base.Process(args) is invoked the args.Result.FirstPart property is set as 
 <p class="MsoNormal">The processor</p>
 <!--HTML generated using hilite.me-->
 <div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;">
-   <pre style="line-height: 125%; margin: 0px;"><span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
+   <pre style="line-height: 125%; margin: 0px;">public <span style="color: #008800; font-weight: bold;">class</span> <span style="color: #bb0066; font-weight: bold;">ImageProcessing</span> : GetImageFieldValue
 {
-    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #008800; font-weight: bold;">override</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">Process</span>(RenderFieldArgs args)
+    public override void Process(RenderFieldArgs args)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (<span style="color: #008800; font-weight: bold;">this</span>.ShouldExecute(args))
+        <span style="color: #008800; font-weight: bold;">if</span> (this<span style="color: #333333;">.</span>ShouldExecute(args))
         {
-            args.Result.FirstPart = <span style="color: #008800; font-weight: bold;">this</span>.AddLoadingAttribute(args.Result.FirstPart);
-            args.AbortPipeline();
+            args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart <span style="color: #333333;">=</span> this<span style="color: #333333;">.</span>AddLoadingAttribute(args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart);
         }
 
     }
 
-    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #333399; font-weight: bold;">bool</span> <span style="color: #0066bb; font-weight: bold;">ShouldExecute</span>(RenderFieldArgs args)
+    public <span style="color: #007020;">bool</span> ShouldExecute(RenderFieldArgs args)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (!<span style="color: #008800; font-weight: bold;">base</span>.IsImage(arg))
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (!Sitecore.Context.PageMode.IsNormal)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Site == <span style="color: #008800; font-weight: bold;">null</span>)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore.Context.Item == <span style="color: #008800; font-weight: bold;">null</span>)
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
-        <span style="color: #008800; font-weight: bold;">if</span> (args.Result != <span style="color: #008800; font-weight: bold;">null</span> &amp;&amp; <span style="color: #333399; font-weight: bold;">string</span>.IsNullOrEmpty(args.Result.FirstPart))
-            <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">false</span>;
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="background-color: #ffaaaa; color: red;">!</span>base<span style="color: #333333;">.</span>IsImage(arg))
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (<span style="background-color: #ffaaaa; color: red;">!</span>Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>PageMode<span style="color: #333333;">.</span>IsNormal)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>Site <span style="color: #333333;">==</span> null)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (Sitecore<span style="color: #333333;">.</span>Context<span style="color: #333333;">.</span>Item <span style="color: #333333;">==</span> null)
+            <span style="color: #008800; font-weight: bold;">return</span> false;
+        <span style="color: #008800; font-weight: bold;">if</span> (args<span style="color: #333333;">.</span>Result <span style="color: #333333;">!=</span> null <span style="color: #333333;">&amp;&amp;</span> string<span style="color: #333333;">.</span>IsNullOrEmpty(args<span style="color: #333333;">.</span>Result<span style="color: #333333;">.</span>FirstPart))
+            <span style="color: #008800; font-weight: bold;">return</span> false;
 
-        <span style="color: #008800; font-weight: bold;">return</span> <span style="color: #008800; font-weight: bold;">true</span>;
+        <span style="color: #008800; font-weight: bold;">return</span> true;
     }
 
-    <span style="color: #008800; font-weight: bold;">private</span> <span style="color: #333399; font-weight: bold;">string</span> <span style="color: #0066bb; font-weight: bold;">AddLoadingAttribute</span>(<span style="color: #333399; font-weight: bold;">string</span> tag)
+    private string AddLoadingAttribute(string tag)
     {
-        <span style="color: #008800; font-weight: bold;">if</span> (tag.Contains(<span style="background-color: #fff0f0;">"loading"</span>))
+        <span style="color: #008800; font-weight: bold;">if</span> (tag<span style="color: #333333;">.</span>Contains(<span style="background-color: #fff0f0;">"loading"</span>))
         {
-            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"loading\\s*=\\s*['|\"].+?['\"]"</span>;
-            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
-            tag = Regex.Replace(tag, pattern, replacement);
+            var pattern <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">"loading</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*=</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*['|</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\"</span><span style="background-color: #fff0f0;">].+?['</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\"</span><span style="background-color: #fff0f0;">]"</span>;
+            var replacement <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">" loading='lazy'"</span>;
+            tag <span style="color: #333333;">=</span> Regex<span style="color: #333333;">.</span>Replace(tag, pattern, replacement);
         }
         <span style="color: #008800; font-weight: bold;">else</span>
         {
-            <span style="color: #333399; font-weight: bold;">var</span> pattern = <span style="background-color: #fff0f0;">"\\s*/*\\s*&gt;"</span>;
-            <span style="color: #333399; font-weight: bold;">var</span> replacement = <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
-            tag = Regex.Replace(tag, pattern, replacement);
+            var pattern <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">"</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*/*</span><span style="background-color: #fff0f0; color: #666666; font-weight: bold;">\\</span><span style="background-color: #fff0f0;">s*&gt;"</span>;
+            var replacement <span style="color: #333333;">=</span> <span style="background-color: #fff0f0;">" loading='lazy'/&gt;"</span>;
+            tag <span style="color: #333333;">=</span> Regex<span style="color: #333333;">.</span>Replace(tag, pattern, replacement);
         }
 
         <span style="color: #008800; font-weight: bold;">return</span> tag;
