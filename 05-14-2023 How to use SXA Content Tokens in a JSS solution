@@ -1,0 +1,75 @@
+How to use SXA Content Tokens in a JSS solution
+44
+{
+45
+    <span style="color: #008800; font-weight: bold;">public</span> <span style="color: #0066bb; font-weight: bold;">GetTokenizedTextFieldSerializer</span>(IFieldRenderer fieldRenderer):<span style="color: #008800; font-weight: bold;">base</span>(fieldRenderer)
+46
+    {
+47
+    }
+48
+​
+49
+    <span style="color: #008800; font-weight: bold;">protected</span> <span style="color: #008800; font-weight: bold;">override</span> <span style="color: #008800; font-weight: bold;">void</span> <span style="color: #0066bb; font-weight: bold;">SetResult</span>(GetFieldSerializerPipelineArgs args)
+50
+    {
+51
+        args.Result = <span style="color: #008800; font-weight: bold;">new</span> TokenizedTextFieldSerializer(<span style="color: #008800; font-weight: bold;">this</span>.FieldRenderer);
+52
+    }
+53
+}
+54
+</pre></div>
+55
+<br /></div><div>Now you should add the GetTokenizedTextFieldSerializer processor to the getFieldSerializer, and patch it before GetDefaultFieldSerializer processor. Do not forget to specify the field types that this field serializer should be applied to, in our case single-line text and multi-line text field types.</div><div><br /></div><div><!--HTML generated using hilite.me--><div style="background: rgb(255, 255, 255); border-color: gray; border-image: initial; border-style: solid; border-width: 0.1em 0.1em 0.1em 0.8em; border: solid gray; overflow: auto; padding: 0.2em 0.6em; width: auto;"><pre style="line-height: 125%; margin: 0px;">&lt;configuration xmlns:patch=<span style="background-color: #fff0f0;">"http://www.sitecore.net/xmlconfig/"</span>&gt;
+56
+&lt;sitecore&gt;
+57
+    &lt;pipelines&gt;
+58
+      &lt;<span style="color: #008800; font-weight: bold;">group</span> groupName=<span style="background-color: #fff0f0;">"layoutService"</span>&gt;
+59
+        &lt;pipelines&gt;
+60
+            &lt;getFieldSerializer&gt;
+61
+                &lt;processor patch:before=<span style="background-color: #fff0f0;">"*[@type='Sitecore.LayoutService.Serialization.Pipelines.GetFieldSerializer.GetDefaultFieldSerializer, Sitecore.LayoutService']"</span> type=<span style="background-color: #fff0f0;">"Your.Namespace.GetTokenizedTextFieldSerializer, your.dllName"</span> resolve=<span style="background-color: #fff0f0;">"true"</span>&gt;
+62
+                    &lt;FieldTypes hint=<span style="background-color: #fff0f0;">"list"</span>&gt;
+63
+                        &lt;fieldType id=<span style="background-color: #fff0f0;">"1"</span>&gt;single-line text&lt;/fieldType&gt;
+64
+                        &lt;fieldType id=<span style="background-color: #fff0f0;">"3"</span>&gt;multi-line text&lt;/fieldType&gt;
+65
+                    &lt;/FieldTypes&gt;
+66
+                &lt;/processor&gt;
+67
+            &lt;/getFieldSerializer&gt;
+68
+        &lt;/pipelines&gt;
+69
+      &lt;/<span style="color: #008800; font-weight: bold;">group</span>&gt;
+70
+    &lt;/pipelines&gt;
+71
+&lt;/sitecore&gt;
+72
+&lt;/configuration&gt;
+73
+</pre></div>
+74
+<br /></div><div>And that's it guys, this should fix the problem and now you can create how many content tokens you want and re-use them throughout the whole site.<br /><br />Please take your conclusions and leave a comment!</div><div><b><br /></b></div><div><b>References</b></div><div><b><br /></b></div><div><div>https://sitecore.stackexchange.com/questions/29893/sxa-content-tokens-in-layout-service</div><div><br /></div><div>https://doc.sitecore.com/xp/en/developers/hd/211/sitecore-headless-development/customize-the-serialization-of-a-sitecore-field.html</div></div><div><br /></div><div>https://www.getfishtank.com/blog/embracing-power-content-tokens-sitecore-sxa</div><div><br /></div><div>https://doc.sitecore.com/xp/en/users/sxa/103/sitecore-experience-accelerator/create-and-insert-a-content-token.html</div><div><br /></div><div>https://doc.sitecore.com/xp/en/developers/sxa/103/sitecore-experience-accelerator/content-tokens.html</div>
+75
+</div>
+Configurações de postagens
+Marcadores
+SXA Content Token,Sitecore Pipelines,Sitecore,JSS,SXA,
+Nenhuma sugestão relevante
+Publicada em
+14/05/2023 11:17
+Links
+Local
+Descrição da pesquisa
+Opções
